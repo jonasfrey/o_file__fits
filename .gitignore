@@ -1,3 +1,7 @@
 /localhost/files/
 .O_json_db
 __pycache__/
+/localhost/*.png
+/localhost/*.fts
+/localhost/*.fit
+/localhost/*.fits
