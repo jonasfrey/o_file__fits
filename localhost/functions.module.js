@@ -196,7 +196,14 @@ let f_o_file__fits__from_a_n_u8 = function(a_n_u8, b_strict = true){
     if(o_file__fits.n_bits_per_pixel == 32){
         O_typed_array = Uint32Array;
         s_name_function = 'getUint32';
-
+    }
+    if(o_file__fits.n_bits_per_pixel == -32){
+        O_typed_array = Float32Array;
+        s_name_function = 'getFloat32';
+    }
+    if(o_file__fits.n_bits_per_pixel == -64){
+        O_typed_array = Float64Array;
+        s_name_function = 'getFloat64';
     }
 
     let n_len_a_n_u8_data = o_file__fits.n_index_data_end - o_file__fits.n_index_data_start;
@@ -231,7 +238,7 @@ let f_o_file__fits__from_a_n_u8 = function(a_n_u8, b_strict = true){
 
         o_file__fits.a_n_u__data_typedarray[n_idx_datapoint] = n_physical_value; 
         o_file__fits.a_n_u__data_typedarray_y_flipped[n_idx_real] = n_physical_value;
-        let n_nor =  (n_physical_value / o_file__fits.n_u__max_possible)
+        let n_nor = (n_physical_value / o_file__fits.n_u__max_possible)
         o_file__fits.a_n_f__image_data__normalized[n_idx_datapoint] = n_nor - parseInt(n_nor) ;//cut away the overflow
 
     }
