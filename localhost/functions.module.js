@@ -181,7 +181,7 @@ let f_o_file__fits__from_a_n_u8 = function(a_n_u8, b_strict = true){
         o_file__fits.n_index_data_start += (n_mod - n_remainder);
     }
 
-    o_file__fits.n_bytes_per_datapoint = parseInt(o_file__fits.n_bits_per_pixel / 8);
+    o_file__fits.n_bytes_per_datapoint = Math.abs(parseInt(o_file__fits.n_bits_per_pixel / 8));
 
     let n_length_pixels = o_file__fits.n_scl_x * o_file__fits.n_scl_y;
     o_file__fits.n_index_data_end = o_file__fits.n_index_data_start + (n_length_pixels*o_file__fits.n_bytes_per_datapoint);
@@ -216,7 +216,7 @@ let f_o_file__fits__from_a_n_u8 = function(a_n_u8, b_strict = true){
     // Create a DataView for the Uint8Array's buffer
     const o_view = new DataView(o_file__fits.a_n_u8.buffer);
 
-    o_file__fits.n_u__max_possible = Math.pow(2, o_file__fits.n_bits_per_pixel)-1;
+    o_file__fits.n_u__max_possible = Math.pow(2, Math.abs(o_file__fits.n_bits_per_pixel))-1;
 
     // Convert each pair of bytes in the Uint8Array to Uint16
     for (let n_idx_byte = 0, n_idx_datapoint = 0; n_idx_byte < n_len_a_n_u8_data; n_idx_byte += o_file__fits.n_bytes_per_datapoint, n_idx_datapoint++) {
@@ -310,9 +310,6 @@ let f_calculate_a_n_f__image_data__auto_stretched = async function(
     n_shadows_clip = -1.25
 ){
     
-    o_file__fits.n_u__max_possible = Math.pow(2, o_file__fits.n_bits_per_pixel)-1;
-    // Your normalized Float32Array
-
     let O_float_type_array = f_O_float_type_array__from_o_file__fits(o_file__fits);
     o_file__fits.a_n_f__image_data__normalized_minmax = new O_float_type_array(o_file__fits.a_n_u__data_typedarray.length);
 

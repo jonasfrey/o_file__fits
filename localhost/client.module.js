@@ -47,7 +47,8 @@ let s_path_file = null
 // s_path_file = './files/2023-10-13T04-00-32_m51_Clear_200s_Jonas-.fts'
 // s_path_file = './files/2023-10-12T19-50-50_Coordinates_Halpha_200s_Jonas-.fts'
 // s_path_file = './files/HorseHead.fits'
-s_path_file = './files/m51_stacked_cropped.fit'
+// s_path_file = './files/m51_stacked_cropped.fit'
+s_path_file = './files/r_m33_stacked_cropped.fit'
 
 let a_n_u8 = null;
 // fetch a file (get the bytes)
