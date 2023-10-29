@@ -3,6 +3,19 @@ import {
     O_file__fits, 
 } from "./classes.module.js"
 
+import init, { 
+    compute_stats_u8,
+    compute_stats_u16,
+    compute_stats_u32,
+    compute_stats_f32,
+} from "./wasm_project/pkg/wasm_project.js";
+  
+import {
+    f_measure_time
+  } from "https://deno.land/x/date_functions@1.2/mod.js"
+// Initialize the WASM module
+await init();
+
 let f_o_canvas = null;
 let o_mod_canvas = null;
 if('Deno' in window){
@@ -297,12 +310,48 @@ let f_O_float_type_array__from_o_file__fits = function(o_file__fits){
     return O_float_type_array
 }
 
+
 let f_calculate_a_n_f__image_data__auto_stretched = async function(
     o_file__fits, 
     n_target_bkg = 0.25,
     n_shadows_clip = -1.25
 ){
     
+    o_file__fits.n_u__max_possible = Math.pow(2, Math.abs(o_file__fits.n_bits_per_pixel))-1;
+    
+    let o_stats;
+    // let O_array_typed = Uint8Array;
+    if(o_file__fits.n_bits_per_pixel == 8){
+        o_stats = compute_stats_u8(o_file__fits.a_n_u__data_typedarray, n_target_bkg, n_shadows_clip);
+    }
+    
+    if(o_file__fits.n_bits_per_pixel == 16){
+        // O_array_typed = Uint16Array;
+        o_stats = compute_stats_u16(o_file__fits.a_n_u__data_typedarray, n_target_bkg, n_shadows_clip);
+    }
+    if(o_file__fits.n_bits_per_pixel == 32){
+        // O_array_typed = Uint32Array;
+        o_stats = compute_stats_u32(o_file__fits.a_n_u__data_typedarray, n_target_bkg, n_shadows_clip);
+
+    }
+    if(o_file__fits.n_bits_per_pixel == -32){
+        // O_array_typed = Float32Array;
+        o_stats = compute_stats_f32(o_file__fits.a_n_u__data_typedarray, n_target_bkg, n_shadows_clip);
+    }
+    o_file__fits.a_n_f__image_data__auto_stretched = o_stats?.a_n_f64_autostretched();
+    console.log(o_stats)
+    
+    // o_file__fits.n_u__avg = parseInt(o_file__fits.n_f__avg * o_file__fits.n_u__max_possible)
+
+}
+
+let f_calculate_a_n_f__image_data__auto_stretched_old = async function(
+    o_file__fits, 
+    n_target_bkg = 0.25,
+    n_shadows_clip = -1.25
+){
+    
+
     o_file__fits.n_u__max_possible = Math.pow(2, o_file__fits.n_bits_per_pixel)-1;
     // Your normalized Float32Array
 
@@ -388,7 +437,10 @@ let f_calculate_a_n_f__image_data__auto_stretched = async function(
         let nf = o_file__fits.a_n_f__image_data__normalized_minmax[n_idx];
         let n_f__auto_streched = 0;
         if(nf >= o_file__fits.n_f_shadow_clipping_point){
-            n_f__auto_streched = f_n_mtf__from_numbers(o_file__fits.n_f_midtone_balance, (nf - o_file__fits.n_f_shadow_clipping_point) / (1 - o_file__fits.n_f_shadow_clipping_point));
+            n_f__auto_streched = f_n_mtf__from_numbers(
+                o_file__fits.n_f_midtone_balance,
+                (nf - o_file__fits.n_f_shadow_clipping_point) / (1 - o_file__fits.n_f_shadow_clipping_point)
+                );
             // if(n_idx % 100000 == 0){
             //     console.log(n_f__auto_streched)
             // }
@@ -447,7 +499,11 @@ let f_o_canvas_autostretched__from_o_file__fits = async function(
         let n_color_channels = 4;
         let a_n_u8__image_data = new Uint8Array(o_file__fits.a_n_u__data_typedarray.length*n_color_channels);
 
+        // await f_calculate_a_n_f__image_data__auto_stretched_old(o_file__fits);
+
+        // f_measure_time('compute stats rust')
         await f_calculate_a_n_f__image_data__auto_stretched(o_file__fits);
+        // f_measure_time('compute stats rust')
 
         for(let n_idx = 0 ; n_idx < o_file__fits.a_n_f__image_data__auto_stretched.length; n_idx+=1){
     
