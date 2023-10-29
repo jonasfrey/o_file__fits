@@ -15,7 +15,7 @@ import {
   import init, { greet, f_a_n_random, compute_stats_u8, compute_stats_u16} from "./localhost/wasm_project/pkg/wasm_project.js";
   
   // Initialize the WASM module
-  await init();
+  // await init();
   // Use the exported function
   console.log(greet("asdf"));
   
