@@ -1,0 +1,21 @@
+
+# Compiled binaries and libraries
+/target/
+/debug/
+/release/
+
+# Un-comment if you're using `wasm-pack` for building and packaging
+#/pkg/
+
+# Temporary files
+**/*.swp
+**/*.bak
+**/*.tmp
+**/*~
+.DS_Store
+
+# IDE/Editor specific files
+.vscode/
+.idea/
+*.iml
+*.code-workspace
