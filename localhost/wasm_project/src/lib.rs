@@ -142,7 +142,93 @@ pub fn compute_stats_u16(
     n_target_bkg: f64,
     n_shadows_clip: f64
 ) -> Stats {
-    compute_stats::<u16>(data, Some(n_target_bkg), Some(n_shadows_clip))
+    return compute_stats::<u16>(data, Some(n_target_bkg), Some(n_shadows_clip));
+    let n_len_data = data.len();
+    let a_n_u16__init = [u16::MAX, u16::MIN];
+    let a_n_u16__result = data.iter().fold(a_n_u16__init, |mut a_n_acc, &val| {
+        a_n_acc[0] = a_n_acc[0].min(val);
+        a_n_acc[1] = a_n_acc[1].max(val);
+        a_n_acc
+    });
+    let n_min = a_n_u16__result[0];
+    let n_max = a_n_u16__result[1];
+
+    let mut a_n_u16__normalized_minmax = Vec::with_capacity(data.len());
+    let n_range = n_max - n_min; 
+    if n_range as f64 != 0.0 {
+        for &n_value in data {
+            let normalized_value = 
+                (((n_value as f64 - n_min as f64) / n_range as f64) * u16::MAX as f64) as u16;
+            a_n_u16__normalized_minmax.push(normalized_value);
+        }
+    } else {
+        // Handle the case where all values in data are the same
+        for _ in data {
+            a_n_u16__normalized_minmax.push(0); // or some default value
+        }
+    }
+
+    let mut a_n_u16_sorted = a_n_u16__normalized_minmax.to_vec();
+    a_n_u16_sorted.sort_unstable();
+
+    
+    let mut n_median_f = 0.0;
+    let n_idx_center = (n_len_data / 2);
+    if data.len() % 2 == 0 {
+        n_median_f = (a_n_u16_sorted[n_idx_center - 1] as f64 + (a_n_u16_sorted[n_idx_center]) as f64) / 2.0
+    } else {
+        n_median_f = a_n_u16_sorted[n_idx_center] as f64
+    };
+    let n_median = n_median_f as u16;
+    let n_median_nor = n_median_f / u16::MAX as f64;
+
+
+    // Compute average deviation
+    let n_median_absolute_deviation: u16 = (a_n_u16_sorted.iter().map(|&value| {
+        (value as i32 -n_median as i32).abs() as u64
+    }).sum::<u64>() as usize / n_len_data as usize) as u16;
+    
+    // let n_sum = a_n_u16_sorted.iter().map(|&x| x as u32).sum::<u32>() as f64;
+    // let mean = n_sum as f64 / a_n_u16_sorted.len() as f64;
+
+    let n_median_absolute_deviation_nor = (n_median_absolute_deviation as f64 / u16::MAX as f64);
+    let n_tmp = n_median_nor + (n_shadows_clip * n_median_absolute_deviation_nor);
+
+    let n_shadow_clipping_point = n_tmp.min(1.).max(0.);
+
+    let n_midtone_balance = f_n_mtf__from_numbers(
+        n_target_bkg,
+        n_median_nor - n_shadow_clipping_point
+    );
+
+    let mut a_n_f64_autostretched = a_n_u16__normalized_minmax.iter()
+        .map(|&value| {
+            let mut n_auto_stretched: f64 = 0.;
+            let n_val_nor = (value as f64/ u16::MAX as f64) as f64;
+            // return n_val_nor;
+            if n_val_nor >= n_shadow_clipping_point {
+                n_auto_stretched = f_n_mtf__from_numbers(
+                    n_midtone_balance, 
+                    (n_val_nor-n_shadow_clipping_point) / (1.-n_shadow_clipping_point)
+                );
+            }
+            return n_auto_stretched;
+        })
+        .collect();
+
+
+    Stats { 
+        mean: 0.0,
+        median: n_median_nor as f64 / u16::MAX as f64,
+        avg_deviation: n_median_absolute_deviation_nor,
+        min: n_min as f64, /// u16::MAX as f64,
+        max: n_max as f64, /// u16::MAX as f64,
+        n_midtone_balance, 
+        n_shadow_clipping_point,
+        sorted_data: vec![0.0],
+        a_n_f64_autostretched
+     }
+     
 }
 
 #[wasm_bindgen]

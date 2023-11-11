@@ -119,19 +119,19 @@ let f_o_file__fits__from_a_n_u8 = function(a_n_u8, b_strict = true){
     if(n_index__end < 0){
         throw Error(`invalid fits file, could not find 'END' keyword that marks the end of header`);
     }
-    console.log('n_index__end')
-    console.log(n_index__end)
+    // console.log('n_index__end')
+    // console.log(n_index__end)
 
     let o_file__fits = new O_file__fits();
     o_file__fits.a_n_u8 = a_n_u8;
     let a_n_u8__header = a_n_u8.slice(0, n_index__end);
     let s_header = o_text_decoder.decode(a_n_u8__header);
-    console.log('s_header')
-    console.log(s_header)
+    // console.log('s_header')
+    // console.log(s_header)
     for(let n_i = 0; n_i < n_index__end; n_i+=n_length_max_s_data_unit_line){
         let s_line = o_text_decoder.decode(a_n_u8.slice(n_i, n_i+n_length_max_s_data_unit_line));
         // let s_line_next = o_text_decoder.decode(a_n_u8.slice(n_i+n_length_max_s_data_unit_line, n_i+n_length_max_s_data_unit_line+n_length_max_s_data_unit_line));
-        console.log(s_line)
+        // console.log(s_line)
         // console.log(s_line_next)
         if(!b_strict){
             if(s_line.indexOf('=') == -1){
@@ -148,9 +148,9 @@ let f_o_file__fits__from_a_n_u8 = function(a_n_u8, b_strict = true){
             o_data_unit
         )
     }
-    console.log(
-        o_file__fits
-    )
+    // console.log(
+    //     o_file__fits
+    // )
     // Deno.writeTextFile('./o_file__fits.json', JSON.stringify(o_file__fits, null, 4));
 
     let o_data_unit = o_file__fits.a_o_data_unit.find(o=>o.s_keyword.indexOf("NAXIS")!=-1);
@@ -339,7 +339,7 @@ let f_calculate_a_n_f__image_data__auto_stretched = async function(
         o_stats = compute_stats_f32(o_file__fits.a_n_u__data_typedarray, n_target_bkg, n_shadows_clip);
     }
     o_file__fits.a_n_f__image_data__auto_stretched = o_stats?.a_n_f64_autostretched();
-    console.log(o_stats)
+    // console.log(o_stats)
     
     // o_file__fits.n_u__avg = parseInt(o_file__fits.n_f__avg * o_file__fits.n_u__max_possible)
 

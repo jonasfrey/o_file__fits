@@ -36,17 +36,19 @@ let o_file__fits = await f_o_file__fits__from_a_n_u8(
 
 //md: ## get a canvas with the image data already on it
 let o_canvas = await f_o_canvas_nonmanipulated__from_o_file__fits(o_file__fits);
-console.log(o_canvas)
+// console.log(o_canvas)
 // document.body.appendChild(o_canvas)
 
 //md: ## get a canvas with the autostretched image data
+f_measure_time('time autostretch')
 let o_canvas_autostretched = await f_o_canvas_autostretched__from_o_file__fits(o_file__fits);
-console.log(o_canvas_autostretched)
+// console.log(o_canvas_autostretched)
+f_measure_time()
 
 
 // document.body.appendChild(o_canvas_autostretched)
-console.log(o_file__fits)
-console.log('done')
+// console.log(o_file__fits)
+// console.log('done')
 
 let a_s_part = s_path_file.split('/').pop().split('.');
 let s_name_file_out = [...a_s_part.slice(0,-1), '_done', a_s_part.at(-1), 'png'].join('.')
@@ -66,9 +68,9 @@ if(b_deno){
     );
     
     
-    console.log(s_name_file_out)
+    // console.log(s_name_file_out)
     await Deno.writeFile(s_name_file_out, png);
-    console.log('asdf')
+    // console.log('asdf')
 }
 if(!b_deno){
     o_canvas_autostretched.toBlob(function(blob) {

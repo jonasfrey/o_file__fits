@@ -6,7 +6,8 @@ import { encode as encodejpg, Image } from "https://deno.land/x/jpegts@1.1/mod.t
 
 
 // const a_n_u8 = await Deno.readFile('./localhost/files/2023-10-12T19-50-50_Coordinates_Halpha_200s_Jonas-.fts');
-const a_n_u8 = await Deno.readFile('./localhost/files/M-31Andromed220221022931.FITS');
+// const a_n_u8 = await Deno.readFile('./localhost/files/M-31Andromed220221022931.FITS');
+const a_n_u8 = await Deno.readFile('./localhost/files/stellarium-gornergrat.ch_portal_files_telescop-pictures_20231010_100_2023-10-10T23-04-21_Coordinates_Blue_180s_Jonas-.fts');
 // const a_n_u8 = await Deno.readFile('./localhost/files/UITfuv2582gc.fits');
 console.log(a_n_u8);
 
@@ -37,15 +38,15 @@ function powerLawTransform(value, gamma) {
 }
 
 
-let a_n_u8_image_data = new Uint8Array(o_file__fits.a_n__data_typedarray.length * 4);
+let a_n_u8_image_data = new Uint8Array(o_file__fits.a_n_u__data_typedarray.length * 4);
 let n_val_max = Math.pow(2, o_file__fits.n_bits_per_pixel)-1;
-for(let n_idx = 0 ; n_idx < o_file__fits.a_n__data_typedarray.length; n_idx+=1){
-    let n_val_nor = o_file__fits.a_n__data_typedarray[n_idx] / n_val_max;
+for(let n_idx = 0 ; n_idx < o_file__fits.a_n_u__data_typedarray.length; n_idx+=1){
+    let n_val_nor = o_file__fits.a_n_u__data_typedarray[n_idx] / n_val_max;
     let n_val_u8 = parseInt(255 * n_val_nor);
 
 
     // Example usage:
-    var originalValue = o_file__fits.a_n__data_typedarray[n_idx];  // some value between 0 and 2^16-1
+    var originalValue = o_file__fits.a_n_u__data_typedarray[n_idx];  // some value between 0 and 2^16-1
     var logValue = logarithmicStretch(originalValue);
     var normalizedValue = normalize(logValue);
     var byteValue = to8Bit(normalizedValue);
@@ -54,7 +55,7 @@ for(let n_idx = 0 ; n_idx < o_file__fits.a_n__data_typedarray.length; n_idx+=1){
     var gamma = 0.5;  // Adjust this value as needed
     var transformedValue = powerLawTransform(originalValue, gamma);
     var byteValue = to8Bit(transformedValue);
-    n_val_u8 = o_file__fits.a_n__data_typedarray[n_idx] >> 8;
+    n_val_u8 = o_file__fits.a_n_u__data_typedarray[n_idx] >> 8;
         
     a_n_u8_image_data[n_idx*4+0] = n_val_u8;
     a_n_u8_image_data[n_idx*4+1] = n_val_u8;
