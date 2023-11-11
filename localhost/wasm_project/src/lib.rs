@@ -142,7 +142,7 @@ pub fn compute_stats_u16(
     n_target_bkg: f64,
     n_shadows_clip: f64
 ) -> Stats {
-    return compute_stats::<u16>(data, Some(n_target_bkg), Some(n_shadows_clip));
+    // return compute_stats::<u16>(data, Some(n_target_bkg), Some(n_shadows_clip));
     let n_len_data = data.len();
     let a_n_u16__init = [u16::MAX, u16::MIN];
     let a_n_u16__result = data.iter().fold(a_n_u16__init, |mut a_n_acc, &val| {
