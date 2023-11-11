@@ -218,7 +218,7 @@ pub fn compute_stats_u16(
 
 
     Stats { 
-        mean: 0.0,
+        mean: 1.0,
         median: n_median_nor as f64 / u16::MAX as f64,
         avg_deviation: n_median_absolute_deviation_nor,
         min: n_min as f64, /// u16::MAX as f64,
