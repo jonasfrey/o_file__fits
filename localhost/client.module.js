@@ -15,6 +15,36 @@ import {
 } from './functions.module.js'
 let b_deno  = 'Deno' in window
 
+
+let o_select = document.createElement("input");
+o_select.type = 'file'
+document.body.appendChild(
+    o_select
+);
+window.o_file__fits = null;
+if(!b_deno){
+    o_select.onchange = function(o_e){
+    
+            let o_freader = new FileReader();
+            o_freader.onload = async function() {
+            
+                let o_array_buffer = this.result;
+                let a_n_u8 = new Uint8Array(o_array_buffer);
+                let b_strict = false;
+                console.log('trying to load fits...')
+                window.o_file__fits = await f_o_file__fits__from_a_n_u8(a_n_u8, b_strict);
+                console.log('window.o_file__fits')
+                console.log(window.o_file__fits)
+                let o_canvas = f_o_canvas_nonmanipulated__from_o_file__fits(o_file__fits)
+                let o_canvas_autostretched = await f_o_canvas_autostretched__from_o_file__fits(o_file__fits)
+                document.body.appendChild(o_canvas)
+                document.body.appendChild(o_canvas_autostretched)
+                
+            }
+            o_freader.readAsArrayBuffer(this.files[0]);
+    }
+}
+
 //md: ## load fits file (load the bytes int Uint8Array)
 let s_path_file = './files/stellarium-gornergrat.ch_portal_files_telescop-pictures_20231010_100_2023-10-10T23-04-21_Coordinates_Blue_180s_Jonas-.fts'
 
@@ -73,6 +103,8 @@ if(b_deno){
     // console.log('asdf')
 }
 if(!b_deno){
+    document.body.appendChild(o_canvas)
+    document.body.appendChild(o_canvas_autostretched)
     o_canvas_autostretched.toBlob(function(blob) {
         
         const a = document.createElement('a');
