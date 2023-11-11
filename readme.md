@@ -1,4 +1,4 @@
-<!-- {"s_msg":"this file was automatically generated","s_by":"f_generate_markdown.module.js","s_ts_created":"Sun Oct 22 2023 20:50:53 GMT+0200 (Central European Summer Time)","n_ts_created":1698000653249} -->
+<!-- {"s_msg":"this file was automatically generated","s_by":"f_generate_markdown.module.js","s_ts_created":"Sat Nov 11 2023 02:25:30 GMT+0100 (Central European Standard Time)","n_ts_created":1699665930054} -->
 # import functions
 ```javascript
 import {
@@ -10,14 +10,40 @@ import {
 } from './functions.module.js'
 let b_deno  = 'Deno' in window
 
+
+let o_select = document.createElement("input");
+o_select.type = 'file'
+document.body.appendChild(
+    o_select
+);
+window.o_file__fits = null;
+if(!b_deno){
+    o_select.onchange = function(o_e){
+    
+            let o_freader = new FileReader();
+            o_freader.onload = async function() {
+            
+                let o_array_buffer = this.result;
+                let a_n_u8 = new Uint8Array(o_array_buffer);
+                let b_strict = false;
+                console.log('trying to load fits...')
+                window.o_file__fits = await f_o_file__fits__from_a_n_u8(a_n_u8, b_strict);
+                console.log('window.o_file__fits')
+                console.log(window.o_file__fits)
+                let o_canvas = f_o_canvas_nonmanipulated__from_o_file__fits(o_file__fits)
+                let o_canvas_autostretched = await f_o_canvas_autostretched__from_o_file__fits(o_file__fits)
+                document.body.appendChild(o_canvas)
+                document.body.appendChild(o_canvas_autostretched)
+                
+            }
+            o_freader.readAsArrayBuffer(this.files[0]);
+    }
+}
+
 ```
 ## load fits file (load the bytes int Uint8Array)
 ```javascript
-let s_path_file = null
-// s_path_file = './files/M-31Andromed220221022931.FITS'
-// s_path_file = './files/2023-10-13T04-00-32_m51_Clear_200s_Jonas-.fts'
-s_path_file = './files/2023-10-12T19-50-50_Coordinates_Halpha_200s_Jonas-.fts'
-// s_path_file = './files/HorseHead.fits'
+let s_path_file = './files/stellarium-gornergrat.ch_portal_files_telescop-pictures_20231010_100_2023-10-10T23-04-21_Coordinates_Blue_180s_Jonas-.fts'
 
 let a_n_u8 = null;
 // fetch a file (get the bytes)
@@ -41,19 +67,21 @@ let o_file__fits = await f_o_file__fits__from_a_n_u8(
 ## get a canvas with the image data already on it
 ```javascript
 let o_canvas = await f_o_canvas_nonmanipulated__from_o_file__fits(o_file__fits);
-console.log(o_canvas)
+// console.log(o_canvas)
 // document.body.appendChild(o_canvas)
 
 ```
 ## get a canvas with the autostretched image data
 ```javascript
+f_measure_time('time autostretch')
 let o_canvas_autostretched = await f_o_canvas_autostretched__from_o_file__fits(o_file__fits);
-console.log(o_canvas_autostretched)
+// console.log(o_canvas_autostretched)
+f_measure_time()
 
 
 // document.body.appendChild(o_canvas_autostretched)
-console.log(o_file__fits)
-console.log('done')
+// console.log(o_file__fits)
+// console.log('done')
 
 let a_s_part = s_path_file.split('/').pop().split('.');
 let s_name_file_out = [...a_s_part.slice(0,-1), '_done', a_s_part.at(-1), 'png'].join('.')
@@ -75,11 +103,13 @@ if(b_deno){
     );
     
     
-    console.log(s_name_file_out)
+    // console.log(s_name_file_out)
     await Deno.writeFile(s_name_file_out, png);
-    console.log('asdf')
+    // console.log('asdf')
 }
 if(!b_deno){
+    document.body.appendChild(o_canvas)
+    document.body.appendChild(o_canvas_autostretched)
     o_canvas_autostretched.toBlob(function(blob) {
         
         const a = document.createElement('a');
